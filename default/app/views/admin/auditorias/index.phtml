@@ -1,0 +1,13 @@
+<div class="page-header">
+    <h1>Auditorias del Sistema</h1>
+</div>
+<?php View::content() ?>
+<h3 style="margin-bottom: 0px;">Usuarios del Sistema</h3>
+<?php
+Table::headers('id', 'Login', 'Nombres', 'Rol que Posee');
+Table::headers('<span style="font-size:11px">Acciones Realizadas</span>');
+Table::headers('Examinar');
+Table::fields('id', 'login', 'nombres', 'rol', 'num_acciones');
+Table::imgLink('figuras/ver.png', 'admin/auditorias/usuario');
+echo Table::create($usuarios, 'class="table table-bordered table-striped"');
+?>

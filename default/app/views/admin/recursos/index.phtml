@@ -1,0 +1,20 @@
+<div class="page-header">
+    <h1>Recursos del Sistema
+        <?php echo Html::linkAction('escaner', 'Escanear Recursos por Agregar', 'class="btn btn-primary pull-right"') ?>
+    </h1>
+</div>
+<?php View::content() ?>
+<?php
+        Table::headers('id', 'Modulo', 'Controlador');
+        Table::headers('Acción', 'Descripción', 'Estado');
+        Table::headers('Editar', 'Eliminar');
+        Table::fields('id', 'modulo', 'controlador');
+        Table::fields('accion', 'descripcion');
+        Table::imgLink('figuras/circulo_verde.png|figuras/circulo_rojo.png', 'admin/recursos/desactivar|admin/recursos/activar', '', 'activo');
+        Table::imgLink('figuras/editar.png', 'admin/recursos/editar');
+        Table::imgLinkConfirm('figuras/eliminar.png', 'admin/recursos/eliminar', '', '¿Realmente desea Eliminar Este Recurso?');
+        echo Table::create($recursos, 'class="table table-bordered table-striped"');
+?>
+        <div class="form-actions">        
+    <?php echo Html::linkAction("crear", 'Crear Recurso', 'class="btn btn-primary"') ?>
+</div>

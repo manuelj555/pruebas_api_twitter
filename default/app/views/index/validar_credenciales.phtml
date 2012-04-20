@@ -1,0 +1,10 @@
+<div class="page-header">
+    <?php echo Html::linkAction('cerrar_sesion', 'Cerrar Sesión','class="pull-right"'); ?>
+    <h1>
+        <img width="40px" src="<?php echo $data->profile_image_url_https ?>" />
+        Hola <?php eh($data->name)?>
+    </h1>
+</div>
+<?php View::content(); ?>
+<?php require_once 'timeline.phtml'; ?>
+<?php //var_dump($data) ?>

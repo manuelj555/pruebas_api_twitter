@@ -1,0 +1,14 @@
+<div class="page-header">
+    <h1><?php echo ucwords("$model"), ": <span>$action_name</span>" ?></h1>
+</div>
+<?php View::content() ?>
+<?php
+Table::headers('Ver', 'Editar', 'Eliminar');
+Table::imgLink('figuras/ver.png', Router::get('controller_path') . '/ver');
+Table::imgLink('figuras/editar.png', Router::get('controller_path') . '/editar');
+Table::imgLinkConfirm('figuras/eliminar.png', Router::get('controller_path') . '/borrar');
+echo Table::create($results, 'class="zebra-striped bordered-table"');
+?>
+<div class="actions">
+    <?php echo Html::linkAction("crear/", 'Crear registro', 'class=" primary btn"') ?>
+</div>

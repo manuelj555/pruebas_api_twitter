@@ -1,0 +1,19 @@
+<div class="page-header">
+    <h1>Menus del Sistema</h1>
+</div>
+<?php View::content() ?>
+<?php
+Table::headers('id', 'Texto a Mostrar', 'Menu Padre');
+Table::headers('Recurso al que Accede', 'URL', 'Clases', 'Posición');
+Table::headers('Estado', 'Editar', 'Eliminar');
+Table::fields('id', 'nombre', 'padre', 'recurso', 'url', 'clases', 'posicion');
+Table::imgLink('figuras/circulo_verde.png|figuras/circulo_rojo.png',
+                'admin/menu/desactivar|admin/menu/activar', '', 'activo');
+Table::imgLink('figuras/editar.png', 'admin/menu/editar');
+Table::imgLinkConfirm('figuras/eliminar.png', 'admin/menu/eliminar', '',
+                '¿Realmente desea Eliminar Este Menu?');
+echo Table::create($menus, 'class="table table-bordered table-striped"');
+?>
+<div class="form-actions">
+    <?php echo Html::linkAction("crear", 'Crear Menu', 'class="btn btn-primary"') ?>
+</div>

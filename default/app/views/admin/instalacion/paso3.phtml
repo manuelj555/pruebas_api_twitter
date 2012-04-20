@@ -1,0 +1,28 @@
+<div class="page-header">
+    <h1>Configuraci&oacute;n de la Base de Datos</h1>
+</div>
+<?php View::content() ?>
+<?php echo Form::open(NULL, 'post', 'class="form-horizontal"') ?>
+<h5>Tablas de la Base de Datos <?php //eh(Config::get('databases.'))     ?></h5>
+<ul>
+    <?php foreach ((array) $tablas_existentes as $t): ?> 
+        <li><?php eh($t) ?></li>
+    <?php endforeach; ?> 
+</ul>
+<h5>Tablas a Crear</h5>
+<ul>
+    <?php foreach ((array) $tablas_crear as $t): ?> 
+    <?php if (substr($t, 0, 5) == 'data_') continue; ?>
+        <li>
+            <?php echo Form::check("tablas.$t", $t, NULL, TRUE) ?> <?php eh($t) ?>
+            <h6 style="display: inline;margin-left: 20px;">
+                <?php echo in_array($t, $tablas_existentes) ? 'Se Reemplazará' : '' ?>
+            </h6>
+        </li>
+    <?php endforeach; ?> 
+</ul>
+<div class="form-actions">
+    <?php echo Html::linkAction('paso2', 'Volver', 'class="btn"') ?>
+    <?php echo Form::submit('Crear Tablas', 'class="btn btn-primary"') ?>
+</div>
+<?php echo Form::close() ?>

@@ -1,0 +1,16 @@
+<div class="page-header">
+    <h1>Roles (Perfiles) del Sistema</h1>
+</div>
+<?php View::content() ?>
+<?php
+Table::headers('id', 'Rol', 'Roles de los que hereda privilegios', 'plantilla a usar', 'Estado', 'Editar', 'Eliminar');
+Table::fields('id', 'rol', 'padres', 'plantilla');
+Table::imgLink('figuras/circulo_verde.png|figuras/circulo_rojo.png', 'admin/roles/desactivar|admin/roles/activar', '', 'activo');
+Table::imgLink('figuras/editar.png', 'admin/roles/editar');
+Table::imgLinkConfirm('figuras/eliminar.png', 'admin/roles/eliminar', '', '¿Realmente desea Eliminar Este Rol?');
+//Table::link('admin/usuarios/editar', 'Editar');
+echo Table::create($roles, 'class="table table-bordered table-striped"');
+?>
+<div class="form-actions">
+    <?php echo Html::linkAction("crear", 'Crear Rol', 'class="btn btn-primary"') ?>
+</div>

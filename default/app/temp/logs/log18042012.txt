@@ -1,0 +1,47 @@
+[Wed, 18 Apr 12 14:38:55 -0430][CRITICAL] exception 'KumbiaException' with message '[Error Desconocido en PostgreSQL "No se puede conectar a la base de datos"]' in /var/www/k_twitter/core/libs/db/adapters/pgsql.php:132
+Stack trace:
+#0 /var/www/k_twitter/core/libs/db/adapters/pgsql.php(203): DbPgSQL->connect(Array)
+#1 /var/www/k_twitter/core/libs/db/db.php(97): DbPgSQL->__construct(Array)
+#2 /var/www/k_twitter/core/libs/db/db.php(64): Db::connect('development')
+#3 /var/www/k_twitter/default/app/models/instalacion.php(101): Db::factory()
+#4 /var/www/k_twitter/default/app/controllers/admin/instalacion_controller.php(72): Instalacion->verificarConexion()
+#5 [internal function]: InstalacionController->paso3()
+#6 /var/www/k_twitter/core/kumbia/dispatcher.php(86): ReflectionMethod->invokeArgs(Object(InstalacionController), Array)
+#7 /var/www/k_twitter/core/kumbia/bootstrap.php(148): Dispatcher::execute(Array)
+#8 /var/www/k_twitter/default/app/libs/bootstrap.php(21): require_once('/var/www/k_twit...')
+#9 /var/www/k_twitter/default/public/index.php(81): require('/var/www/k_twit...')
+#10 {main}
+[Wed, 18 Apr 12 14:40:02 -0430][CRITICAL] exception 'KumbiaException' with message 'ERROR:  la columna «roles.rol» debe aparecer en la cláusula GROUP BY o ser usada en una función de agregación
+LINE 1: SELECT COUNT(*) FROM (SELECT usuarios.*,roles.rol,COUNT(audi...
+                                                ^ al ejecutar <em>'SELECT COUNT(*) FROM (SELECT usuarios.*,roles.rol,COUNT(auditorias.id) as num_acciones FROM usuarios INNER JOIN roles ON roles.id = usuarios.roles_id LEFT JOIN auditorias ON usuarios.id = auditorias.usuarios_id GROUP BY usuarios.id,usuarios.roles_id,usuarios.login,usuarios.clave,usuarios.nombres,usuarios.email,usuarios.activo) AS t'</em>' in /var/www/k_twitter/core/libs/db/adapters/pgsql.php:159
+Stack trace:
+#0 /var/www/k_twitter/core/libs/db/db_base.php(160): DbPgSQL->query('SELECT COUNT(*)...')
+#1 /var/www/k_twitter/core/libs/kumbia_active_record/kumbia_active_record.php(1161): DbBase->fetch_one('SELECT COUNT(*)...')
+#2 /var/www/k_twitter/core/libs/kumbia_active_record/behaviors/paginate.php(184): KumbiaActiveRecord->count_by_sql('SELECT COUNT(*)...')
+#3 [internal function]: Paginator::paginate_by_sql(Object(Usuarios), 'SELECT usuarios...', 'page: 1')
+#4 /var/www/k_twitter/core/libs/kumbia_active_record/kumbia_active_record.php(2474): call_user_func_array(Array, Array)
+#5 /var/www/k_twitter/default/app/models/usuarios.php(68): KumbiaActiveRecord->paginate_by_sql('SELECT usuarios...', 'page: 1')
+#6 /var/www/k_twitter/default/app/controllers/admin/auditorias_controller.php(32): Usuarios->obtener_usuarios_con_num_acciones(1)
+#7 [internal function]: AuditoriasController->index()
+#8 /var/www/k_twitter/core/kumbia/dispatcher.php(86): ReflectionMethod->invokeArgs(Object(AuditoriasController), Array)
+#9 /var/www/k_twitter/core/kumbia/bootstrap.php(148): Dispatcher::execute(Array)
+#10 /var/www/k_twitter/default/app/libs/bootstrap.php(21): require_once('/var/www/k_twit...')
+#11 /var/www/k_twitter/default/public/index.php(81): require('/var/www/k_twit...')
+#12 {main}
+[Wed, 18 Apr 12 14:40:14 -0430][CRITICAL] exception 'KumbiaException' with message 'ERROR:  la columna «roles.rol» debe aparecer en la cláusula GROUP BY o ser usada en una función de agregación
+LINE 1: SELECT COUNT(*) FROM (SELECT usuarios.*,roles.rol,COUNT(audi...
+                                                ^ al ejecutar <em>'SELECT COUNT(*) FROM (SELECT usuarios.*,roles.rol,COUNT(auditorias.id) as num_acciones FROM usuarios INNER JOIN roles ON roles.id = usuarios.roles_id LEFT JOIN auditorias ON usuarios.id = auditorias.usuarios_id GROUP BY usuarios.id,usuarios.roles_id,usuarios.login,usuarios.clave,usuarios.nombres,usuarios.email,usuarios.activo) AS t'</em>' in /var/www/k_twitter/core/libs/db/adapters/pgsql.php:159
+Stack trace:
+#0 /var/www/k_twitter/core/libs/db/db_base.php(160): DbPgSQL->query('SELECT COUNT(*)...')
+#1 /var/www/k_twitter/core/libs/kumbia_active_record/kumbia_active_record.php(1161): DbBase->fetch_one('SELECT COUNT(*)...')
+#2 /var/www/k_twitter/core/libs/kumbia_active_record/behaviors/paginate.php(184): KumbiaActiveRecord->count_by_sql('SELECT COUNT(*)...')
+#3 [internal function]: Paginator::paginate_by_sql(Object(Usuarios), 'SELECT usuarios...', 'page: 1')
+#4 /var/www/k_twitter/core/libs/kumbia_active_record/kumbia_active_record.php(2474): call_user_func_array(Array, Array)
+#5 /var/www/k_twitter/default/app/models/usuarios.php(68): KumbiaActiveRecord->paginate_by_sql('SELECT usuarios...', 'page: 1')
+#6 /var/www/k_twitter/default/app/controllers/admin/auditorias_controller.php(32): Usuarios->obtener_usuarios_con_num_acciones(1)
+#7 [internal function]: AuditoriasController->index()
+#8 /var/www/k_twitter/core/kumbia/dispatcher.php(86): ReflectionMethod->invokeArgs(Object(AuditoriasController), Array)
+#9 /var/www/k_twitter/core/kumbia/bootstrap.php(148): Dispatcher::execute(Array)
+#10 /var/www/k_twitter/default/app/libs/bootstrap.php(21): require_once('/var/www/k_twit...')
+#11 /var/www/k_twitter/default/public/index.php(81): require('/var/www/k_twit...')
+#12 {main}

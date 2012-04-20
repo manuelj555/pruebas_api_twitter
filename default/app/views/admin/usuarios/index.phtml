@@ -1,0 +1,17 @@
+<div class="page-header">
+    <h1>Usuarios del Sistema</h1>
+</div>
+<div id="mensajes_flash" >        
+    <?php View::content() ?>
+</div> 
+<?php
+Table::headers('id', 'Login', 'Nombres', 'Correo Electronico');
+Table::headers('Rol que Posee', 'Estado', 'Editar');
+Table::fields('id', 'login', 'nombres', 'email', 'rol');
+Table::imgLink('figuras/circulo_verde.png|figuras/circulo_rojo.png', 'admin/usuarios/desactivar|admin/usuarios/activar', '', 'activo');
+Table::imgLink('figuras/editar.png', 'admin/usuarios/editar');
+echo Table::create($usuarios, 'class="table table-bordered table-striped"');
+?>
+<div class="form-actions">
+    <?php echo Html::linkAction("crear", 'Crear Usuario','class="btn btn-primary"') ?>
+</div>
