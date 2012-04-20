@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Backend - KumbiaPHP Backend
  * PHP version 5
@@ -23,127 +24,68 @@
  */
 Load::lib('api_twitter/tmhOAuth');
 Load::lib('api_twitter/tmhUtilities');
+Load::lib('api_twitter/k_twitter');
 
 class IndexController extends AppController
 {
 
+    /**
+     *
+     * @var KTwitter 
+     */
+    private $twitter;
+
     public function before_filter()
     {
-        if (!Session::has('access_token') && $this->action_name !== 'index') {
+        $this->twitter = new KTwitter();
+        if (!$this->twitter->isIdentified() &&
+                !in_array($this->action_name, array(
+                    'index', 'acceder', 'cerrar_sesion'
+                ))) {
             Flash::error('Problemas al intentar conectar ' .
-                            Html::linkAction('obtener_tokens', 'Volver a Intentar'));
+                    Html::linkAction('obtener_tokens', 'Volver a Intentar'));
             $this->action_name = 'index';
         }
     }
 
     public function index()
     {
-        $tmhOAuth = new tmhOAuth(Config::get('config.twitter'));
+        
+    }
+
+    public function acceder()
+    {
         if (Session::has('access_token')) {
-            $this->validar_credenciales($tmhOAuth, Session::get('access_token'));
-            return $this->timeline();
+            return Router::toAction('hello');
         } elseif (Input::hasRequest('oauth_verifier')) {
-            return $this->acceso_tokens($tmhOAuth, Session::get('oauth'));
+            if ($this->twitter->getAccessToken(Input::request('oauth_verifier'))) {
+                return Router::toAction('hello');
+            }
         } else {
-            return $this->obtener_tokens($tmhOAuth);
+            return $this->twitter->getOAuthToken();
         }
     }
 
-    protected function obtener_tokens($tmhOAuth)
+    public function hello()
     {
-        View::select(__FUNCTION__);
-
-        $params['oauth_callback'] = tmhUtilities::php_self();
-
-        $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/request_token', ''), $params);
-
-        if ($code == 200) {
-            Session::set('oauth', $data = $tmhOAuth->extract_params($tmhOAuth->response['response']));
-            $this->link = $tmhOAuth->url("oauth/authenticate", '') . "?oauth_token={$data['oauth_token']}";
+        if ($this->data = $this->twitter->verifyCredentials()) {
+            $this->timeline = $this->twitter->timeline();
         } else {
-            $this->outputError($tmhOAuth);
+            Flash::error('Error :-(');
+            View::select(NULL);
         }
     }
 
-    protected function acceso_tokens($tmhOAuth, $dataTokens)
-    {
-        View::select(__FUNCTION__);
-        $tmhOAuth->config['user_token'] = $dataTokens['oauth_token'];
-        $tmhOAuth->config['user_secret'] = $dataTokens['oauth_token_secret'];
-
-        $code = $tmhOAuth->request('POST', $tmhOAuth->url('oauth/access_token', ''), array(
-                    'oauth_verifier' => Input::request('oauth_verifier')
-                ));
-
-        if ($code == 200) {
-            Session::set('access_token', $tmhOAuth->extract_params($tmhOAuth->response['response']));
-            //Session::delete('oauth');
-            Flash::valid('Listo :-)');
-            return Router::redirect();
-        } else {
-            $this->outputError($tmhOAuth);
-        }
-    }
-
-    protected function validar_credenciales($tmhOAuth, $dataTokens)
-    {
-        View::select(__FUNCTION__);
-        $tmhOAuth->config['user_token'] = $dataTokens['oauth_token'];
-        $tmhOAuth->config['user_secret'] = $dataTokens['oauth_token_secret'];
-
-        $code = $tmhOAuth->request(
-                        'GET',
-                        $tmhOAuth->url('1/account/verify_credentials')
-        );
-
-        if ($code == 200) {
-            $this->data = json_decode($tmhOAuth->response['response']);
-        } else {
-            $this->outputError($tmhOAuth);
-        }
-    }
-
-    public function timeline()
-    {
-
-        $tmhOAuth = new tmhOAuth(Config::get('config.twitter'));
-        $dataTokens = Session::get('access_token');
-        $tmhOAuth->config['user_token'] = $dataTokens['oauth_token'];
-        $tmhOAuth->config['user_secret'] = $dataTokens['oauth_token_secret'];
-        $code = $tmhOAuth->request('GET', $tmhOAuth->url('1/statuses/home_timeline'), array(
-                    'include_entities' => '1',
-                ));
-
-        if ($code == 200) {
-            $this->timeline = json_decode($tmhOAuth->response['response'], true);
-        } else {
-            $this->timeline = array();
-            $this->outputError($tmhOAuth);
-        }
-    }
-
-    public function twitter()
+    public function tweet()
     {
         if (Input::hasPost('texto')) {
-            $tmhOAuth = new tmhOAuth(Config::get('config.twitter'));
-            $dataTokens = Session::get('access_token');
-            $tmhOAuth->config['user_token'] = $dataTokens['oauth_token'];
-            $tmhOAuth->config['user_secret'] = $dataTokens['oauth_token_secret'];
-            $code = $tmhOAuth->request('POST', $tmhOAuth->url('1/statuses/update'), array(
-                        'status' => Input::post('texto'),
-                    ));
-
-            if ($code == 200) {
-                //$this->timeline = json_decode($tmhOAuth->response['response'], true);
-                Flash::valid('El Mensaje se Envió con exito');
-            } elseif ($code == 403) {
-                Flash::warning('Ya has enviado un mensaje igual...!!! Deja la Vivesa');
-                $this->outputError($tmhOAuth);
+            if ($this->twitter->tweet(Input::post('texto'))) {
+                Flash::valid('El Tweet se envio Correctamete :-)');
             } else {
-                $this->timeline = array();
-                $this->outputError($tmhOAuth);
+                Flash::error('No se Pudo enviar el Tweet');
             }
         }
+        return Router::toAction('hello');
     }
 
     public function amigos()
@@ -153,13 +95,13 @@ class IndexController extends AppController
         $tmhOAuth->config['user_token'] = $dataTokens['oauth_token'];
         $tmhOAuth->config['user_secret'] = $dataTokens['oauth_token_secret'];
         $code = $tmhOAuth->request('GET', $tmhOAuth->url('1/friends/ids'), array(
-                        //'stringify_ids' => TRUE
+                //'stringify_ids' => TRUE
                 ));
 
         if ($code == 200) {
             $this->data = json_decode($tmhOAuth->response['response'], true);
             $code = $tmhOAuth->request('GET', $tmhOAuth->url('1/users/lookup'), array(
-                            'user_id' => join(',',$this->data['ids'])
+                'user_id' => join(',', $this->data['ids'])
                     ));
             if ($code == 200) {
                 $this->data = json_decode($tmhOAuth->response['response'], true);
@@ -174,6 +116,7 @@ class IndexController extends AppController
     public function cerrar_sesion()
     {
         Session::delete('access_token');
+        $this->twitter->destroy();
         return Router::redirect();
     }
 
